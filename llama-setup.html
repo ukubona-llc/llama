@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Local LLM Daily Workflow</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #0b0f14;
+        color: #e6edf3;
+        margin: 40px;
+        line-height: 1.6;
+    }
+    h1, h2 {
+        color: #7cc7ff;
+    }
+    .box {
+        background: #111823;
+        border: 1px solid #263241;
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+    code, pre {
+        background: #0f1620;
+        padding: 10px;
+        border-radius: 8px;
+        display: block;
+        overflow-x: auto;
+    }
+    a {
+        color: #7cc7ff;
+    }
+    .big {
+        font-size: 1.1em;
+        font-weight: 600;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>LOCAL LLM DAILY WORKFLOW</h1>
+
+<div class="box">
+    <h2>What this is</h2>
+    <p class="big">
+        This is your “offline ChatGPT system”.
+    </p>
+    <p>
+        You are running a local AI model on your Mac. No internet required after setup.
+    </p>
+</div>
+
+<div class="box">
+    <h2>1. DAILY START (DO THIS EVERY DAY)</h2>
+
+    <p><b>Step 1 — Start the AI engine</b></p>
+    <pre>ollama serve</pre>
+
+    <p>If it says “already running”, ignore it.</p>
+
+    <p><b>Step 2 — Open chat interface</b></p>
+    <pre>http://localhost:3000</pre>
+
+    <p>This is your ChatGPT-like screen.</p>
+</div>
+
+<div class="box">
+    <h2>2. IF CHAT INTERFACE IS NOT OPEN</h2>
+
+    <p>Run this ONCE (only if needed):</p>
+
+    <pre>
+docker run -d \
+  -p 3000:8080 \
+  -v open-webui:/app/backend/data \
+  --name open-webui \
+  ghcr.io/open-webui/open-webui:main
+    </pre>
+
+    <p>Then reopen:</p>
+    <pre>http://localhost:3000</pre>
+</div>
+
+<div class="box">
+    <h2>3. YOUR DAILY WORKFLOW (IMPORTANT)</h2>
+
+    <ul>
+        <li>Open laptop</li>
+        <li>Start or confirm <code>ollama serve</code></li>
+        <li>Open browser</li>
+        <li>Go to <code>localhost:3000</code></li>
+        <li>Start typing like ChatGPT</li>
+    </ul>
+</div>
+
+<div class="box">
+    <h2>4. WHAT YOU CAN DO</h2>
+
+    <ul>
+        <li>Ask questions</li>
+        <li>Summarize notes</li>
+        <li>Write documents</li>
+        <li>Code and debug</li>
+        <li>Think through ideas</li>
+    </ul>
+</div>
+
+<div class="box">
+    <h2>5. MODEL YOU ARE USING</h2>
+
+    <p>
+        You are running a local LLM (example: Llama 3.1 8B).
+    </p>
+
+    <p>
+        It is a frozen neural network that predicts the next word based on context.
+    </p>
+</div>
+
+<div class="box">
+    <h2>6. SIMPLE RULE</h2>
+
+    <p class="big">
+        If browser is open → you are “online with your AI”
+    </p>
+
+    <p>
+        If not → start ollama + open browser.
+    </p>
+</div>
+
+<div class="box">
+    <h2>7. TROUBLESHOOTING (ONLY IF NEEDED)</h2>
+
+    <p><b>Nothing works?</b></p>
+    <pre>ollama list</pre>
+
+    <p><b>Restart engine:</b></p>
+    <pre>killall ollama && ollama serve</pre>
+</div>
+
+<div class="box">
+    <h2>FINAL IDEA</h2>
+
+    <p>
+        You are no longer “using AI tools”.
+        You are operating a local intelligence system.
+    </p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0b0d;--surface:#131519;--surface2:#1a1d24;
+  --border:rgba(255,255,255,0.08);--text:#e2e2de;--muted:#7a7a88;
+  --accent:#4ade80;--accent-dim:rgba(74,222,128,0.09);--accent-text:#86efac;
+  --amber-dim:rgba(251,191,36,0.09);--amber-text:#fbbf24;
+  --code-bg:#1a1d24;--mono:'JetBrains Mono','Courier New',monospace;
+  --r:8px;--tr:0.2s ease
+}
+[data-theme=light]{
+  --bg:#f2f2ef;--surface:#fff;--surface2:#f0f0ed;
+  --border:rgba(0,0,0,0.08);--text:#17171a;--muted:#606070;
+  --accent:#16a34a;--accent-dim:rgba(22,163,74,0.07);--accent-text:#15803d;
+  --amber-dim:rgba(180,120,0,0.07);--amber-text:#92610a;
+  --code-bg:#ebebea
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font-sans,-apple-system,sans-serif);font-size:14px;line-height:1.6;transition:background var(--tr),color var(--tr)}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.brand{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--muted)}
+.brand span{color:var(--accent)}
+.controls{display:flex;gap:8px;align-items:center}
+.seg{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.seg button{background:none;border:none;padding:6px 14px;font-size:12px;font-family:var(--mono);color:var(--muted);cursor:pointer;transition:background var(--tr),color var(--tr);white-space:nowrap}
+.seg button.active{background:var(--accent-dim);color:var(--accent-text)}
+.theme-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:border-color var(--tr)}
+.theme-btn:hover{border-color:var(--accent)}
+
+.wrap{max-width:780px;margin:0 auto;padding:24px 20px 48px}
+.pane{display:none}.pane.active{display:block}
+
+.hero{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin-bottom:14px}
+.hero-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
+.hero h2{font-size:1.35rem;font-weight:500;margin-bottom:4px}
+.hero p{color:var(--muted);font-size:13px;margin-bottom:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:20px;margin-right:6px}
+.pill.green{background:var(--accent-dim);color:var(--accent-text);border:1px solid rgba(74,222,128,0.18)}
+.pill.amber{background:var(--amber-dim);color:var(--amber-text);border:1px solid rgba(251,191,36,0.18)}
+[data-theme=light] .pill.green{border-color:rgba(22,163,74,0.2)}
+[data-theme=light] .pill.amber{border-color:rgba(180,120,0,0.2)}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 26px;margin-bottom:12px}
+.card-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.card-label::before{content:'';width:14px;height:1px;background:var(--accent);opacity:.4}
+.card h3{font-size:.95rem;font-weight:500;margin-bottom:12px}
+
+.step-list{padding:0;list-style:none;display:flex;flex-direction:column;gap:0}
+.step-list li{display:flex;gap:10px;font-size:13px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border)}
+.step-list li:last-child{border-bottom:none}
+.step-list li strong{color:var(--text);display:block;font-weight:500;font-size:13px}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--accent-dim);color:var(--accent-text);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-family:var(--mono)}
+
+.cmd-row{display:flex;align-items:center;justify-content:space-between;background:var(--code-bg);border:1px solid var(--border);border-radius:var(--r);padding:8px 13px;margin:8px 0;gap:8px}
+.cmd-row code{font-family:var(--mono);font-size:12px;color:var(--accent-text);background:none;padding:0;word-break:break-all;line-height:1.5}
+.copy{background:none;border:1px solid var(--border);border-radius:5px;padding:2px 9px;font-size:11px;font-family:var(--mono);color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all var(--tr)}
+.copy:hover{background:var(--accent-dim);color:var(--accent-text)}
+.copy.ok{color:var(--accent);border-color:var(--accent)}
+
+.note{border-left:2px solid var(--accent);background:var(--accent-dim);padding:9px 13px;border-radius:0 var(--r) var(--r) 0;font-size:12px;color:var(--accent-text);margin-top:12px;line-height:1.5}
+.note.amber{border-left-color:var(--amber-text);background:var(--amber-dim);color:var(--amber-text)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.mini{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--muted)}
+.mini strong{color:var(--text);display:block;margin-bottom:2px;font-weight:500;font-size:12px}
+
+.open-btn{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);color:var(--accent-text);border:1px solid rgba(74,222,128,0.2);border-radius:var(--r);padding:7px 14px;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;text-decoration:none;margin-top:10px;transition:opacity var(--tr)}
+.open-btn:hover{opacity:.8;text-decoration:none}
+[data-theme=light] .open-btn{border-color:rgba(22,163,74,0.22)}
+
+@media(max-width:500px){.grid2{grid-template-columns:1fr}.wrap{padding:16px 14px 36px}}
+</style>
+
+<div id="app" data-theme="dark">
+  <div class="topbar">
+    <div class="brand"><span>U</span>K<span>U</span>B<span>O</span>N<span>A</span> <span style="opacity:.35">·</span> local ai</div>
+    <div class="controls">
+      <div class="seg">
+        <button class="active" onclick="sw('lms')">LM Studio</button>
+        <button onclick="sw('ollama')">Ollama</button>
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="ti ti-sun" id="ticon" style="font-size:15px"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- LM STUDIO PANE -->
+    <div class="pane active" id="pane-lms">
+      <div class="hero">
+        <div class="hero-label">Tool 1 of 2</div>
+        <h2>LM Studio</h2>
+        <p>GUI app. Built-in chat. No terminal needed. The one worth using.</p>
+        <span class="pill green"><i class="ti ti-cpu" style="font-size:12px" aria-hidden="true"></i> Qwen3 32B Q4_K_M</span>
+        <span class="pill green">~22 GB · ~40 tok/s</span>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Daily start</div>
+        <h3>Load and chat</h3>
+        <ul class="step-list">
+          <li><span class="step-num">1</span><div><strong>Open LM Studio</strong>From Applications — it's a proper Mac app with a GUI.</div></li>
+          <li><span class="step-num">2</span><div><strong>Go to the Models tab</strong>Find Qwen3 32B in the left sidebar.</div></li>
+          <li><span class="step-num">3</span><div><strong>Click Load</strong>Wait 30–60 sec. Status turns green: "Loaded".</div></li>
+          <li><span class="step-num">4</span><div><strong>Switch to Chat tab</strong>Built-in chat interface — no browser, no terminal.</div></li>
+        </ul>
+        <div class="note">This is the capable one. 32B parameters at Q4_K_M quantization — noticeably better reasoning than small models.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Terminal check — optional</div>
+        <h3>Verify it's serving</h3>
+        <div class="cmd-row"><code>curl http://localhost:1234/v1/models</code><button class="copy" onclick="cp(this,'curl http://localhost:1234/v1/models')">Copy</button></div>
+        <div class="cmd-row"><code>lms ps</code><button class="copy" onclick="cp(this,'lms ps')">Copy</button></div>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px">Port 1234. Exposes an OpenAI-compatible API — useful later if you want to connect VS Code or other tools.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Honest assessment</div>
+        <h3>What to expect</h3>
+        <div class="grid2">
+          <div class="mini"><strong>vs Llama 3.1 8B</strong>Meaningfully better. More coherent reasoning, longer context handling, fewer hallucinations.</div>
+          <div class="mini"><strong>vs Claude / GPT-4</strong>Still a gap — but usable for drafts, summaries, code review, offline research.</div>
+          <div class="mini"><strong>Your machine advantage</strong>48 GB means 32B fits with RAM to spare. Most people can't run this locally.</div>
+          <div class="mini"><strong>Best use case</strong>Private documents. Offline work. Things that shouldn't go to a cloud API.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OLLAMA PANE -->
+    <div class="pane" id="pane-ollama">
+      <div class="hero">
+        <div class="hero-label">Tool 2 of 2</div>
+        <h2>Ollama</h2>
+        <p>CLI runner. No GUI. Pair with Open WebUI for a chat interface, otherwise it's just a terminal.</p>
+        <span class="pill amber"><i class="ti ti-cpu" style="font-size:12px" aria-hidden="true"></i> llama3.1:8b</span>
+        <span class="pill amber">4.9 GB · fast but limited</span>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Daily start</div>
+        <h3>Start the engine + chat UI</h3>
+        <div class="cmd-row"><code>ollama serve</code><button class="copy" onclick="cp(this,'ollama serve')">Copy</button></div>
+        <ul class="step-list">
+          <li><span class="step-num">1</span><div><strong>Run ollama serve</strong>If it says "already running" — you're good.</div></li>
+          <li><span class="step-num">2</span><div><strong>Open browser → localhost:3000</strong>That's Open WebUI — the actual chat interface.</div></li>
+          <li><span class="step-num">3</span><div><strong>Select llama3.1:8b from the dropdown</strong>Top of the chat window.</div></li>
+        </ul>
+        <a class="open-btn" href="http://localhost:3000" target="_blank"><i class="ti ti-external-link" style="font-size:12px" aria-hidden="true"></i> Open WebUI → localhost:3000</a>
+        <div class="note amber">The raw terminal (`ollama run llama3.1:8b`) is intentionally spartan — that's the 1973 feeling. localhost:3000 is what makes it usable.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Useful commands</div>
+        <h3>When things go wrong</h3>
+        <div class="cmd-row"><code>ollama list</code><button class="copy" onclick="cp(this,'ollama list')">Copy</button></div>
+        <div class="cmd-row"><code>killall ollama && ollama serve</code><button class="copy" onclick="cp(this,'killall ollama && ollama serve')">Copy</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">If Open WebUI isn't running</div>
+        <h3>Start it once with Docker</h3>
+        <div class="cmd-row"><code style="line-height:1.6">docker run -d -p 3000:8080 \<br>  -v open-webui:/app/backend/data \<br>  --name open-webui \<br>  ghcr.io/open-webui/open-webui:main</code><button class="copy" onclick="cp(this,'docker run -d -p 3000:8080 -v open-webui:/app/backend/data --name open-webui ghcr.io/open-webui/open-webui:main')">Copy</button></div>
+        <div class="note amber">Run once. After that Open WebUI starts automatically with Docker.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Honest assessment</div>
+        <h3>8B is the ceiling here</h3>
+        <div class="grid2">
+          <div class="mini"><strong>llama3.1:8b</strong>Fast. Fine for simple Q&amp;A and short drafts. Falls apart on nuanced reasoning.</div>
+          <div class="mini"><strong>vs Qwen3 32B</strong>Not in the same tier. If you need quality, use LM Studio instead.</div>
+          <div class="mini"><strong>What it's good for</strong>Quick offline lookups. Low-stakes drafts. Testing pipelines locally.</div>
+          <div class="mini"><strong>Could upgrade</strong>Pull a bigger model: ollama pull llama3.3:70b — but it'll be slower.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function sw(id){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  document.querySelectorAll('.seg button').forEach((b,i)=>{
+    b.classList.toggle('active',(id==='lms'&&i===0)||(id==='ollama'&&i===1));
+  });
+}
+function toggleTheme(){
+  const app=document.getElementById('app');
+  const dark=app.dataset.theme==='dark';
+  app.dataset.theme=dark?'light':'dark';
+  document.getElementById('ticon').className=dark?'ti ti-moon':'ti ti-sun';
+}
+function cp(btn,text){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('ok');btn.textContent='✓';
+    setTimeout(()=>{btn.classList.remove('ok');btn.textContent='Copy'},1600);
+  });
+}
+</script>
