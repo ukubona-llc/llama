@@ -1,236 +1,813 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M3 Max (48GB) Local AI Setup Guide</title>
-
+<title>Local AI Setup — M3 Max 48GB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-    --bg:#fafafa;
-    --card:#ffffff;
-    --text:#111;
-    --muted:#666;
-    --accent:#0f62fe;
-    --border:#e5e5e5;
+/* ── THEME TOKENS ─────────────────────────────────────────── */
+:root {
+  --logo-spin: 12s;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition: 0.22s ease;
+  --font-ui:   'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 }
 
-body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    margin:0;
-    padding:40px 20px;
-    line-height:1.7;
+[data-theme="dark"] {
+  --bg:          #0a0b0d;
+  --card:        #131519;
+  --card-border: rgba(255,255,255,0.08);
+  --text:        #e2e2de;
+  --muted:       #7a7a88;
+  --accent:      #4ade80;
+  --accent-dim:  #152419;
+  --accent-text: #86efac;
+  --accent-link: #60a5fa;
+  --code-bg:     #1a1d24;
+  --note-bg:     #1a1610;
+  --note-border: #7c5a14;
+  --note-text:   #d4a84b;
+  --pre-bg:      #0f1114;
+  --eye-outer:   #4ade80;
+  --eye-inner:   #16a34a;
+  --eye-pupil:   #0a0b0d;
+  --eye-shine:   rgba(74,222,128,0.35);
+  --toggle-bg:   #1e2028;
+  --toggle-bdr:  rgba(255,255,255,0.13);
+  --chip-bg:     rgba(74,222,128,0.1);
+  --chip-text:   #86efac;
+  --rec-border:  #4ade80;
+  --rec-bg:      #111a14;
+  --rec-text:    #86efac;
+  --pill-g-bg:   rgba(74,222,128,0.12);
+  --pill-g-text: #4ade80;
+  --pill-gr-bg:  rgba(255,255,255,0.06);
+  --pill-gr-txt: #7a7a88;
+  --sum-bg:      #111a14;
+  --sum-border:  rgba(74,222,128,0.3);
+  --sum-text:    #86efac;
+  --footer-text: #4a4a58;
 }
 
-.container{
-    max-width:900px;
-    margin:auto;
+[data-theme="light"] {
+  --bg:          #f2f2ef;
+  --card:        #ffffff;
+  --card-border: rgba(0,0,0,0.08);
+  --text:        #17171a;
+  --muted:       #606070;
+  --accent:      #16a34a;
+  --accent-dim:  #dcfce7;
+  --accent-text: #15803d;
+  --accent-link: #1d4ed8;
+  --code-bg:     #f0f0ed;
+  --note-bg:     #fef9ec;
+  --note-border: #d97706;
+  --note-text:   #92400e;
+  --pre-bg:      #f4f4f1;
+  --eye-outer:   #16a34a;
+  --eye-inner:   #166534;
+  --eye-pupil:   #ffffff;
+  --eye-shine:   rgba(22,163,74,0.25);
+  --toggle-bg:   #ffffff;
+  --toggle-bdr:  rgba(0,0,0,0.15);
+  --chip-bg:     #dcfce7;
+  --chip-text:   #166534;
+  --rec-border:  #16a34a;
+  --rec-bg:      #f0fdf4;
+  --rec-text:    #166534;
+  --pill-g-bg:   #dcfce7;
+  --pill-g-text: #15803d;
+  --pill-gr-bg:  #f0f0ed;
+  --pill-gr-txt: #606070;
+  --sum-bg:      #f0fdf4;
+  --sum-border:  rgba(22,163,74,0.3);
+  --sum-text:    #15803d;
+  --footer-text: #aaaaaa;
 }
 
-.card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:32px;
-    margin-bottom:24px;
+/* ── RESET & BASE ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+  padding: 0;
+  line-height: 1.7;
+  font-size: 15px;
+  transition: background var(--transition), color var(--transition);
+  min-height: 100vh;
 }
 
-h1,h2,h3{
-    margin-top:0;
+a { color: var(--accent-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── TOPBAR ───────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--card-border);
+  background: var(--card);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: background var(--transition), border-color var(--transition);
 }
 
-h1{
-    font-size:2.5rem;
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-h2{
-    color:var(--accent);
-    margin-bottom:12px;
+.topbar-wordmark {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  gap: 0;
+}
+.topbar-wordmark .hl { color: var(--accent); }
+
+.topbar-tagline {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  opacity: 0.7;
 }
 
-ul{
-    padding-left:24px;
+/* ── ROTATING EYE ─────────────────────────────────────────── */
+@keyframes eye-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes eye-spin-rev {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
 }
 
-code{
-    background:#f0f0f0;
-    padding:2px 6px;
-    border-radius:4px;
+.logo-ring {
+  animation: eye-spin var(--logo-spin) linear infinite;
+  transform-origin: 50% 50%;
+}
+.logo-iris {
+  animation: eye-spin-rev var(--logo-spin) linear infinite;
+  transform-origin: 50% 50%;
 }
 
-a{
-    color:var(--accent);
-    text-decoration:none;
+@media (prefers-reduced-motion: reduce) {
+  .logo-ring, .logo-iris { animation: none; }
 }
 
-a:hover{
-    text-decoration:underline;
+/* ── THEME TOGGLE BUTTON ──────────────────────────────────── */
+.theme-toggle {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--toggle-bdr);
+  background: var(--toggle-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background var(--transition), border-color var(--transition);
+  flex-shrink: 0;
+}
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* ── CONTAINER ────────────────────────────────────────────── */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 36px 24px 60px;
 }
 
-.note{
-    border-left:4px solid var(--accent);
-    padding-left:16px;
-    margin-top:16px;
+/* ── HERO ─────────────────────────────────────────────────── */
+.hero-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 36px 36px 32px;
+  margin-bottom: 20px;
+  transition: background var(--transition), border-color var(--transition);
 }
 
-footer{
-    text-align:center;
-    color:var(--muted);
-    margin-top:40px;
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+}
+
+.hero-emoji {
+  font-size: 3.2rem;
+  line-height: 1;
+  display: block;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 2px 8px rgba(74,222,128,0.2));
+}
+
+.hero-card h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.hero-card p { color: var(--muted); font-size: 15px; }
+
+/* ── CARDS ────────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 16px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.step-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-label::before {
+  content: '';
+  display: inline-block;
+  width: 18px; height: 1px;
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+.card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 14px;
+  letter-spacing: -0.02em;
+}
+
+.card h3 {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 18px 0 10px;
+  font-family: var(--font-mono);
+}
+
+.card ul, .card ol {
+  padding-left: 1.4rem;
+  color: var(--muted);
+}
+
+.card li { margin-bottom: 5px; }
+.card li strong { color: var(--text); font-weight: 500; }
+
+/* link button */
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-dim);
+  color: var(--accent-text);
+  border: 1px solid var(--rec-border);
+  border-radius: var(--radius-md);
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  margin: 4px 0 14px;
+  font-family: var(--font-mono);
+  transition: opacity var(--transition);
+  opacity: 0.9;
+}
+.link-btn:hover { opacity: 1; text-decoration: none; }
+
+/* ── CODE / PRE ───────────────────────────────────────────── */
+code {
+  background: var(--code-bg);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-text);
+}
+
+pre {
+  background: var(--pre-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-text);
+  margin: 14px 0;
+  line-height: 1.5;
+}
+
+.coderow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--pre-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 9px 14px;
+  margin: 14px 0;
+  gap: 10px;
+}
+.coderow code { background: transparent; padding: 0; }
+
+.copy-btn {
+  background: none;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 3px 10px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition), color var(--transition);
+}
+.copy-btn:hover { background: var(--accent-dim); color: var(--accent-text); }
+.copy-btn.copied { color: var(--accent); border-color: var(--accent); }
+
+/* ── NOTE ─────────────────────────────────────────────────── */
+.note {
+  border-left: 3px solid var(--note-border);
+  background: var(--note-bg);
+  padding: 12px 16px;
+  margin-top: 16px;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--note-text);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ── QUANT GRID ───────────────────────────────────────────── */
+.quant-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.quant-card {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  transition: border-color var(--transition);
+}
+
+.quant-card.rec {
+  border: 1.5px solid var(--rec-border);
+  background: var(--rec-bg);
+}
+
+.qtag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.quant-card.rec .qtag {
+  background: var(--accent);
+  color: var(--eye-pupil);
+}
+
+.quant-card p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.quant-card.rec p { color: var(--rec-text); }
+
+.rec-badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--pill-g-bg);
+  color: var(--pill-g-text);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ── PERF TABLE ───────────────────────────────────────────── */
+.perf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 14px;
+}
+
+.perf-table th {
+  font-weight: 500;
+  text-align: left;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--card-border);
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: var(--font-mono);
+}
+
+.perf-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--card-border);
+  color: var(--text);
+}
+
+.perf-table tr:last-child td { border-bottom: none; }
+.perf-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+}
+.pill.green { background: var(--pill-g-bg); color: var(--pill-g-text); }
+.pill.gray  { background: var(--pill-gr-bg); color: var(--pill-gr-txt); }
+
+/* ── CAPS GRID ────────────────────────────────────────────── */
+.caps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.cap-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  border: 1px solid var(--card-border);
+}
+
+.cap-icon { font-size: 18px; flex-shrink: 0; }
+
+/* ── PHASE 2 ──────────────────────────────────────────────── */
+.ph-list { margin-top: 14px; }
+
+.ph-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--card-border);
+  font-size: 14px;
+}
+.ph-item:last-child { border-bottom: none; }
+
+.ph-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-family: var(--font-mono);
+}
+
+.ph-item strong { color: var(--text); display: block; font-weight: 500; margin-bottom: 2px; }
+.ph-item span   { color: var(--muted); font-size: 13px; }
+
+/* ── SUMMARY CARD ─────────────────────────────────────────── */
+.summary-card {
+  background: var(--sum-bg);
+  border: 1px solid var(--sum-border);
+  border-radius: var(--radius-lg);
+  padding: 26px 32px;
+  margin-bottom: 16px;
+}
+
+.summary-card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--sum-text);
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+.sum-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--sum-border);
+  font-size: 14px;
+  color: var(--sum-text);
+  font-family: var(--font-mono);
+}
+.sum-row:last-child { border-bottom: none; }
+.sum-icon { font-size: 16px; }
+
+/* ── FOOTER ───────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  color: var(--footer-text);
+  font-size: 12px;
+  padding-top: 12px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .quant-grid { grid-template-columns: 1fr; }
+  .caps-grid  { grid-template-columns: 1fr; }
+  .container  { padding: 24px 16px 48px; }
+  .card       { padding: 22px 20px; }
+  .hero-card  { padding: 26px 20px; }
+  .topbar     { padding: 12px 16px; }
+  .topbar-tagline { display: none; }
 }
 </style>
 </head>
-
 <body>
 
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <!-- Rotating Ukubona eye — also the theme toggle -->
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
+      <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g class="logo-ring">
+          <circle cx="18" cy="18" r="16.5" stroke="var(--eye-outer)" stroke-width="1.5" stroke-dasharray="5 3.5" fill="none"/>
+          <circle cx="18" cy="2"  r="2.2" fill="var(--eye-outer)"/>
+          <circle cx="18" cy="34" r="2.2" fill="var(--eye-outer)"/>
+          <circle cx="2"  cy="18" r="2.2" fill="var(--eye-outer)"/>
+          <circle cx="34" cy="18" r="2.2" fill="var(--eye-outer)"/>
+        </g>
+        <g class="logo-iris">
+          <ellipse cx="18" cy="18" rx="10" ry="7" fill="var(--eye-inner)"/>
+          <circle  cx="18" cy="18" r="5"         fill="var(--eye-pupil)"/>
+          <circle  cx="15.5" cy="15.8" r="1.8"   fill="var(--eye-shine)"/>
+        </g>
+      </svg>
+    </button>
+    <div>
+      <div class="topbar-wordmark">
+        <span class="hl">U</span>K<span class="hl">U</span>B<span class="hl">O</span>N<span class="hl">A</span>
+      </div>
+      <div class="topbar-tagline">sovereign · digital · infrastructure</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
 <div class="container">
 
-<div class="card">
-<h1>🦙 Local AI Setup</h1>
-<p><strong>Hardware:</strong> MacBook Pro M3 Max, 48GB Unified Memory</p>
-<p>This machine is powerful enough to run advanced local language models entirely on-device.</p>
-</div>
+  <!-- HERO -->
+  <div class="hero-card">
+    <div class="hero-chip">M3 Max · 48 GB unified memory</div>
+    <span class="hero-emoji">🦙</span>
+    <h1>Local AI Setup</h1>
+    <p><strong>Hardware:</strong> MacBook Pro M3 Max, 48 GB Unified Memory<br>
+    This machine is powerful enough to run advanced local language models entirely on-device.</p>
+  </div>
 
-<div class="card">
-<h2>Step 1 — Install LM Studio</h2>
+  <!-- STEP 1 -->
+  <div class="card">
+    <div class="step-label">Step 1</div>
+    <h2>Install LM Studio</h2>
+    <a class="link-btn" href="https://lmstudio.ai" target="_blank">↗ lmstudio.ai</a>
+    <ul>
+      <li>Download the <strong>Mac (Apple Silicon)</strong> version</li>
+      <li>Drag into Applications</li>
+      <li>Launch LM Studio</li>
+      <li>Click <strong>"Open"</strong> if macOS shows a security prompt</li>
+    </ul>
+  </div>
 
-<p>Download:</p>
+  <!-- STEP 2 -->
+  <div class="card">
+    <div class="step-label">Step 2</div>
+    <h2>Download a Model</h2>
+    <ul>
+      <li>Open <strong>Discover</strong> in the sidebar</li>
+      <li>Search for <strong>Qwen3 32B Instruct</strong></li>
+      <li>Select a quantized version</li>
+    </ul>
 
-<p>
-<a href="https://lmstudio.ai" target="_blank">
-https://lmstudio.ai
-</a>
-</p>
+    <h3>Recommended Quantization</h3>
 
-<ul>
-<li>Download Mac version</li>
-<li>Drag into Applications</li>
-<li>Launch LM Studio</li>
-<li>Click "Open" if macOS shows a security prompt</li>
-</ul>
-</div>
+    <div class="quant-grid">
+      <div class="quant-card">
+        <div class="qtag">Q2_K</div>
+        <p>Smallest — noticeable quality loss. Skip unless storage is critical.</p>
+      </div>
+      <div class="quant-card rec">
+        <div class="qtag">Q4_K_M</div><span class="rec-badge">Recommended</span>
+        <p>Best balance of quality, speed, and memory on 48 GB.</p>
+      </div>
+      <div class="quant-card">
+        <div class="qtag">Q8_0</div>
+        <p>Near-lossless — larger than needed; no meaningful gain over Q4.</p>
+      </div>
+    </div>
 
-<div class="card">
-<h2>Step 2 — Download a Model</h2>
+    <div class="note">
+      Quantization compresses model weights. <strong>Q4_K_M</strong> keeps ~95% of quality at roughly half the memory footprint of Q8. Avoid Q2 (too compressed) and Q8 (larger than necessary).
+    </div>
+  </div>
 
-<p>Inside LM Studio:</p>
+  <!-- STEP 3 -->
+  <div class="card">
+    <div class="step-label">Step 3</div>
+    <h2>Load the Model</h2>
+    <ul>
+      <li>Click <strong>Download</strong> and wait for completion</li>
+      <li>Click <strong>Load</strong> in the model card</li>
+      <li>Watch for the status indicator</li>
+    </ul>
+    <div class="coderow">
+      <code>Model Loaded · Ready</code>
+      <button class="copy-btn" onclick="copyText(this,'Model Loaded · Ready')">Copy</button>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:4px">You now have a private ChatGPT-style system running entirely on your Mac.</p>
+  </div>
 
-<ul>
-<li>Open <strong>Discover</strong></li>
-<li>Search for <strong>Qwen3 32B Instruct</strong></li>
-<li>Select a quantized version</li>
-</ul>
+  <!-- PERFORMANCE -->
+  <div class="card">
+    <div class="step-label">Reference</div>
+    <h2>Performance Expectations</h2>
+    <table class="perf-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>VRAM used</th>
+          <th>Tokens / sec</th>
+          <th>Experience</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Qwen3 32B Q4_K_M</td>
+          <td>~22 GB</td>
+          <td>~35–50</td>
+          <td><span class="pill green">Excellent</span></td>
+        </tr>
+        <tr>
+          <td>Llama 3.3 70B Q4_K_M</td>
+          <td>~42 GB</td>
+          <td>~12–18</td>
+          <td><span class="pill gray">Slower but usable</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">
+      Token/sec figures are estimates — actual speed varies by prompt length and system load. Monitor memory pressure in Activity Monitor; keep it out of the red zone.
+    </div>
+  </div>
 
-<h3>Recommended Quantization</h3>
+  <!-- WHAT YOU CAN DO -->
+  <div class="card">
+    <div class="step-label">Capabilities</div>
+    <h2>What You Can Do</h2>
+    <div class="caps-grid">
+      <div class="cap-item"><span class="cap-icon">💬</span> Private chat</div>
+      <div class="cap-item"><span class="cap-icon">📄</span> Analyze PDFs</div>
+      <div class="cap-item"><span class="cap-icon">🔍</span> Offline research</div>
+      <div class="cap-item"><span class="cap-icon">📝</span> Summarize documents</div>
+      <div class="cap-item"><span class="cap-icon">🚫💳</span> No API fees</div>
+      <div class="cap-item"><span class="cap-icon">🔒</span> Data stays on-device</div>
+    </div>
+  </div>
 
-<p>
-<code>Q4_K_M</code>
-</p>
+  <!-- PHASE 2 -->
+  <div class="card">
+    <div class="step-label">Phase 2 — Optional</div>
+    <h2>Extend the Stack</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:4px">Once comfortable with LM Studio:</p>
+    <div class="ph-list">
+      <div class="ph-item">
+        <div class="ph-num">1</div>
+        <div><strong>Install Ollama</strong><span>CLI-based model runner; integrates with many tools</span></div>
+      </div>
+      <div class="ph-item">
+        <div class="ph-num">2</div>
+        <div><strong>Install Open WebUI</strong><span>Browser-based chat front-end for Ollama</span></div>
+      </div>
+      <div class="ph-item">
+        <div class="ph-num">3</div>
+        <div><strong>Connect local documents</strong><span>RAG (retrieval-augmented generation) over your own files</span></div>
+      </div>
+      <div class="ph-item">
+        <div class="ph-num">4</div>
+        <div><strong>Build a personal knowledge system</strong><span>Notes, frameworks, PDFs → grounded reasoning</span></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px">
+      <strong>Ukubona Twin</strong> — a local reasoning system grounded in your own corpus: notes, frameworks, PDFs, and research. Phase 2 is where that becomes possible.
+    </div>
+  </div>
 
-<p>This provides the best balance between:</p>
+  <!-- SUMMARY -->
+  <div class="summary-card">
+    <h2>✅ Recommended Starting Point</h2>
+    <div class="sum-row"><span class="sum-icon">🖥</span> LM Studio</div>
+    <div class="sum-row"><span class="sum-icon">🦙</span> Qwen3 32B Instruct</div>
+    <div class="sum-row"><span class="sum-icon">⚙️</span> Q4_K_M quantization</div>
+  </div>
 
-<ul>
-<li>Quality</li>
-<li>Speed</li>
-<li>Memory usage</li>
-</ul>
+  <footer>
+    <!-- tiny rotating eye in footer -->
+    <svg width="14" height="14" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="opacity:0.5">
+      <g class="logo-ring">
+        <circle cx="18" cy="18" r="16.5" stroke="var(--eye-outer)" stroke-width="1.5" stroke-dasharray="5 3.5" fill="none"/>
+        <circle cx="18" cy="2"  r="2.2" fill="var(--eye-outer)"/>
+        <circle cx="18" cy="34" r="2.2" fill="var(--eye-outer)"/>
+        <circle cx="2"  cy="18" r="2.2" fill="var(--eye-outer)"/>
+        <circle cx="34" cy="18" r="2.2" fill="var(--eye-outer)"/>
+      </g>
+      <g class="logo-iris">
+        <ellipse cx="18" cy="18" rx="10" ry="7" fill="var(--eye-inner)"/>
+        <circle  cx="18" cy="18" r="5"         fill="var(--eye-pupil)"/>
+        <circle  cx="15.5" cy="15.8" r="1.8"   fill="var(--eye-shine)"/>
+      </g>
+    </svg>
+    M3 Max · 48 GB · Local AI · June 2026
+  </footer>
 
-<div class="note">
-Avoid Q2 (too compressed) and Q8 (larger than necessary).
-</div>
-</div>
+</div><!-- /container -->
 
-<div class="card">
-<h2>Step 3 — Load the Model</h2>
+<script>
+// ── THEME TOGGLE ─────────────────────────────────────────────
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+});
 
-<ul>
-<li>Click Download</li>
-<li>Wait for completion</li>
-<li>Click Load</li>
-</ul>
-
-<p>You should see something similar to:</p>
-
-<pre>
-Model Loaded
-Ready
-</pre>
-
-<p>You now have a private ChatGPT-style system running entirely on your Mac.</p>
-</div>
-
-<div class="card">
-<h2>Performance Expectations</h2>
-
-<table style="width:100%; border-collapse:collapse;">
-<tr>
-<th align="left">Model</th>
-<th align="left">Experience</th>
-</tr>
-
-<tr>
-<td>Qwen3 32B</td>
-<td>Excellent</td>
-</tr>
-
-<tr>
-<td>Llama 3.3 70B</td>
-<td>Possible but slower</td>
-</tr>
-</table>
-</div>
-
-<div class="card">
-<h2>What You Can Do</h2>
-
-<ul>
-<li>Chat privately</li>
-<li>Analyze PDFs</li>
-<li>Summarize documents</li>
-<li>Research topics offline</li>
-<li>Work without API fees</li>
-<li>Keep data on-device</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>Phase 2 (Optional)</h2>
-
-<p>Once comfortable with LM Studio:</p>
-
-<ol>
-<li>Install Ollama</li>
-<li>Install Open WebUI</li>
-<li>Connect local documents</li>
-<li>Build a personal knowledge system</li>
-</ol>
-
-<p>Potential future project:</p>
-
-<p><strong>Ukubona Twin</strong> — a local reasoning system grounded in your own corpus, notes, frameworks, PDFs, and websites.</p>
-</div>
-
-<div class="card">
-<h2>Recommended Starting Point</h2>
-
-<p>
-✅ LM Studio<br>
-✅ Qwen3 32B Instruct<br>
-✅ Q4_K_M Quantization
-</p>
-
-<p>
-This is likely the best first local AI experience for an M3 Max with 48GB memory.
-</p>
-</div>
-
-<footer>
-Built for M3 Max • 48GB • Local AI • June 2026
-</footer>
-
-</div>
+// ── COPY BUTTON ───────────────────────────────────────────────
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = 'Copy';
+    }, 1800);
+  });
+}
+</script>
 
 </body>
 </html>
