@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M3 Max (48GB) Local AI Setup Guide</title>
+
+<style>
+:root{
+    --bg:#fafafa;
+    --card:#ffffff;
+    --text:#111;
+    --muted:#666;
+    --accent:#0f62fe;
+    --border:#e5e5e5;
+}
+
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    margin:0;
+    padding:40px 20px;
+    line-height:1.7;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:32px;
+    margin-bottom:24px;
+}
+
+h1,h2,h3{
+    margin-top:0;
+}
+
+h1{
+    font-size:2.5rem;
+}
+
+h2{
+    color:var(--accent);
+    margin-bottom:12px;
+}
+
+ul{
+    padding-left:24px;
+}
+
+code{
+    background:#f0f0f0;
+    padding:2px 6px;
+    border-radius:4px;
+}
+
+a{
+    color:var(--accent);
+    text-decoration:none;
+}
+
+a:hover{
+    text-decoration:underline;
+}
+
+.note{
+    border-left:4px solid var(--accent);
+    padding-left:16px;
+    margin-top:16px;
+}
+
+footer{
+    text-align:center;
+    color:var(--muted);
+    margin-top:40px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+<h1>🦙 Local AI Setup</h1>
+<p><strong>Hardware:</strong> MacBook Pro M3 Max, 48GB Unified Memory</p>
+<p>This machine is powerful enough to run advanced local language models entirely on-device.</p>
+</div>
+
+<div class="card">
+<h2>Step 1 — Install LM Studio</h2>
+
+<p>Download:</p>
+
+<p>
+<a href="https://lmstudio.ai" target="_blank">
+https://lmstudio.ai
+</a>
+</p>
+
+<ul>
+<li>Download Mac version</li>
+<li>Drag into Applications</li>
+<li>Launch LM Studio</li>
+<li>Click "Open" if macOS shows a security prompt</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Step 2 — Download a Model</h2>
+
+<p>Inside LM Studio:</p>
+
+<ul>
+<li>Open <strong>Discover</strong></li>
+<li>Search for <strong>Qwen3 32B Instruct</strong></li>
+<li>Select a quantized version</li>
+</ul>
+
+<h3>Recommended Quantization</h3>
+
+<p>
+<code>Q4_K_M</code>
+</p>
+
+<p>This provides the best balance between:</p>
+
+<ul>
+<li>Quality</li>
+<li>Speed</li>
+<li>Memory usage</li>
+</ul>
+
+<div class="note">
+Avoid Q2 (too compressed) and Q8 (larger than necessary).
+</div>
+</div>
+
+<div class="card">
+<h2>Step 3 — Load the Model</h2>
+
+<ul>
+<li>Click Download</li>
+<li>Wait for completion</li>
+<li>Click Load</li>
+</ul>
+
+<p>You should see something similar to:</p>
+
+<pre>
+Model Loaded
+Ready
+</pre>
+
+<p>You now have a private ChatGPT-style system running entirely on your Mac.</p>
+</div>
+
+<div class="card">
+<h2>Performance Expectations</h2>
+
+<table style="width:100%; border-collapse:collapse;">
+<tr>
+<th align="left">Model</th>
+<th align="left">Experience</th>
+</tr>
+
+<tr>
+<td>Qwen3 32B</td>
+<td>Excellent</td>
+</tr>
+
+<tr>
+<td>Llama 3.3 70B</td>
+<td>Possible but slower</td>
+</tr>
+</table>
+</div>
+
+<div class="card">
+<h2>What You Can Do</h2>
+
+<ul>
+<li>Chat privately</li>
+<li>Analyze PDFs</li>
+<li>Summarize documents</li>
+<li>Research topics offline</li>
+<li>Work without API fees</li>
+<li>Keep data on-device</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Phase 2 (Optional)</h2>
+
+<p>Once comfortable with LM Studio:</p>
+
+<ol>
+<li>Install Ollama</li>
+<li>Install Open WebUI</li>
+<li>Connect local documents</li>
+<li>Build a personal knowledge system</li>
+</ol>
+
+<p>Potential future project:</p>
+
+<p><strong>Ukubona Twin</strong> — a local reasoning system grounded in your own corpus, notes, frameworks, PDFs, and websites.</p>
+</div>
+
+<div class="card">
+<h2>Recommended Starting Point</h2>
+
+<p>
+✅ LM Studio<br>
+✅ Qwen3 32B Instruct<br>
+✅ Q4_K_M Quantization
+</p>
+
+<p>
+This is likely the best first local AI experience for an M3 Max with 48GB memory.
+</p>
+</div>
+
+<footer>
+Built for M3 Max • 48GB • Local AI • June 2026
+</footer>
+
+</div>
+
+</body>
+</html>
